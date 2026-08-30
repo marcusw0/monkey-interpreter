@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/marcusw0/monkey-language/ast"
-	"github.com/marcusw0/monkey-language/lexer"
-	"github.com/marcusw0/monkey-language/token"
+	"github.com/marcusw0/monkey-interpreter/ast"
+	"github.com/marcusw0/monkey-interpreter/lexer"
+	"github.com/marcusw0/monkey-interpreter/token"
 )
 
 const (
@@ -227,8 +227,11 @@ func (p *Parser) Errors() []string {
 }
 
 func (p *Parser) peekError(t token.TokenType) {
-	msg := fmt.Sprintf("expected next token to be %s, got %s instead",
-		t, p.peekToken.Type)
+	msg := fmt.Sprintf(
+		"expected next token to be %s, got %s instead",
+		t,
+		p.peekToken.Type,
+	)
 	p.errors = append(p.errors, msg)
 }
 
