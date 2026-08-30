@@ -392,12 +392,17 @@ func TestOperatorPrecedenceParsing(t *testing.T) {
 	}
 
 	for _, tt := range tests {
+		fmt.Printf("\n========== INPUT: %q ==========\n", tt.input)
+		fmt.Printf("EXPECTED AST: %q\n", tt.expected)
 		l := lexer.New(tt.input)
 		p := New(l)
 		program := p.ParseProgram()
 		checkParseErrors(t, p)
 
 		actual := program.String()
+		fmt.Printf("ACTUAL AST: %q\n", actual)
+		fmt.Println("=================================================")
+
 		if actual != tt.expected {
 			t.Errorf("expected=%q, got=%q", tt.expected, actual)
 		}
