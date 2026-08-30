@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/marcusw0/monkey-language/ast"
-	"github.com/marcusw0/monkey-language/lexer"
+	"github.com/marcusw0/monkey-interpreter/ast"
+	"github.com/marcusw0/monkey-interpreter/lexer"
 )
 
 func TestLetStatements(t *testing.T) {
@@ -300,7 +300,8 @@ func TestParsingInfixExpressions(t *testing.T) {
 		if len(program.Statements) != 1 {
 			t.Fatalf(
 				"program.Statements does not contain %d statements. got=%d\n",
-				1, len(program.Statements),
+				1,
+				len(program.Statements),
 			)
 		}
 
