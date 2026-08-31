@@ -1,0 +1,109 @@
+package parser
+
+import (
+	"fmt"
+	"strconv"
+
+	"github.com/marcusw0/monkey-interpreter/ast"
+	"github.com/marcusw0/monkey-interpreter/token"
+)
+
+func (p *Parser) parseExpression(precedence int) ast.Expression {
+	// defer untrace(trace(fmt.Sprintf(
+	// 	"parseExpression precedence=%d curToken=%q peekToken=%q",
+	// 	precedence, p.curToken.Literal, p.peekToken.Literal)))
+
+	prefix := p.prefixParseFns[p.curToken.Type]
+	if prefix == nil {
+		p.noPrefixParseFnError(p.curToken.Type)
+		return nil
+	}
+	leftExp := prefix()
+
+	for !p.peekTokenIs(token.SEMICOLON) && precedence < p.peekPrecedence() {
+		infix := p.infixParseFns[p.peekToken.Type]
+		if infix == nil {
+			return leftExp
+		}
+
+		p.nextToken()
+
+		leftExp = infix(leftExp)
+	}
+
+	return leftExp
+}
+
+func (p *Parser) parseIdentifier() ast.Expression {
+	// defer untrace(trace(fmt.Sprintf(
+	// 	"parseIdentifier value=%q", p.curToken.Literal)))
+
+	return &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
+}
+
+func (p *Parser) parseIntegerLiteral() ast.Expression {
+	// defer untrace(trace(fmt.Sprintf(
+	// 	"parseIntegerLiteral value=%q", p.curToken.Literal)))
+
+	lit := &ast.IntegerLiteral{Token: p.curToken}
+
+	value, err := strconv.ParseInt(p.curToken.Literal, 0, 64)
+	if err != nil {
+		msg := fmt.Sprintf("could not parse %q as integer", p.curToken.Literal)
+		p.errors = append(p.errors, msg)
+		return nil
+	}
+
+	lit.Value = value
+
+	return lit
+}
+
+func (p *Parser) parseBoolean() ast.Expression {
+	return &ast.Boolean{Token: p.curToken, Value: p.curTokenIs(token.TRUE)}
+}
+
+func (p *Parser) parsePrefixExpression() ast.Expression {
+	// defer untrace(trace(fmt.Sprintf(
+	// 	"parsePrefixExpression operator=%q", p.curToken.Literal)))
+
+	expression := &ast.PrefixExpression{
+		Token:    p.curToken,
+		Operator: p.curToken.Literal,
+	}
+
+	p.nextToken()
+
+	expression.Right = p.parseExpression(PREFIX)
+
+	return expression
+}
+
+func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
+	// defer untrace(trace(fmt.Sprintf(
+	// 	"parseInfixExpression operator=%q", p.curToken.Literal)))
+
+	expression := &ast.InfixExpression{
+		Token:    p.curToken,
+		Operator: p.curToken.Literal,
+		Left:     left,
+	}
+
+	precedence := p.curPrecedence()
+	p.nextToken()
+	expression.Right = p.parseExpression(precedence)
+
+	return expression
+}
+
+func (p *Parser) parseGroupedExpression() ast.Expression {
+	p.nextToken()
+
+	exp := p.parseExpression(LOWEST)
+
+	if !p.expectPeek(token.RPAREN) {
+		return nil
+	}
+
+	return exp
+}
