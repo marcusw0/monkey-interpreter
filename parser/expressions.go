@@ -9,10 +9,6 @@ import (
 )
 
 func (p *Parser) parseExpression(precedence int) ast.Expression {
-	// defer untrace(trace(fmt.Sprintf(
-	// 	"parseExpression precedence=%d curToken=%q peekToken=%q",
-	// 	precedence, p.curToken.Literal, p.peekToken.Literal)))
-
 	prefix := p.prefixParseFns[p.curToken.Type]
 	if prefix == nil {
 		p.noPrefixParseFnError(p.curToken.Type)
@@ -35,16 +31,10 @@ func (p *Parser) parseExpression(precedence int) ast.Expression {
 }
 
 func (p *Parser) parseIdentifier() ast.Expression {
-	// defer untrace(trace(fmt.Sprintf(
-	// 	"parseIdentifier value=%q", p.curToken.Literal)))
-
 	return &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
 }
 
 func (p *Parser) parseIntegerLiteral() ast.Expression {
-	// defer untrace(trace(fmt.Sprintf(
-	// 	"parseIntegerLiteral value=%q", p.curToken.Literal)))
-
 	lit := &ast.IntegerLiteral{Token: p.curToken}
 
 	value, err := strconv.ParseInt(p.curToken.Literal, 0, 64)
@@ -64,9 +54,6 @@ func (p *Parser) parseBoolean() ast.Expression {
 }
 
 func (p *Parser) parsePrefixExpression() ast.Expression {
-	// defer untrace(trace(fmt.Sprintf(
-	// 	"parsePrefixExpression operator=%q", p.curToken.Literal)))
-
 	expression := &ast.PrefixExpression{
 		Token:    p.curToken,
 		Operator: p.curToken.Literal,
@@ -80,9 +67,6 @@ func (p *Parser) parsePrefixExpression() ast.Expression {
 }
 
 func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
-	// defer untrace(trace(fmt.Sprintf(
-	// 	"parseInfixExpression operator=%q", p.curToken.Literal)))
-
 	expression := &ast.InfixExpression{
 		Token:    p.curToken,
 		Operator: p.curToken.Literal,
