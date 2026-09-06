@@ -11,9 +11,14 @@ a lexer, parser, AST, and an interactive REPL that prints tokens.
 ## Run the REPL
 
 ```sh
-go run .
+go run ./cmd/monkey-interpreter
 ```
 
+## Run on a Monkey file
+
+```sh
+go run ./cmd/monkey-interpreter example.mky
+```
 ## Acknowledgments and license
 
 This project was created while following *Writing An Interpreter In Go* by
