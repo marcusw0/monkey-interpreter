@@ -3,7 +3,7 @@ package compiler
 type SymbolScope string
 
 const (
-	LocalScope SymbolScope = "LOCAL"
+	LocalScope  SymbolScope = "LOCAL"
 	GlobalScope SymbolScope = "GLOBAL"
 )
 
