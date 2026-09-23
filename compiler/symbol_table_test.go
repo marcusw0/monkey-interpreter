@@ -96,7 +96,7 @@ func TestResolveLocal(t *testing.T) {
 		}
 		if result != sym {
 			t.Errorf("expected %s to resolve to %+v, got=%+v",
-			sym.Name, sym, result)
+				sym.Name, sym, result)
 		}
 	}
 }
@@ -147,7 +147,7 @@ func TestResolveNestedLocal(t *testing.T) {
 			}
 			if result != sym {
 				t.Errorf("expected %s to resolve to %+v, got=%+v",
-				sym.Name, sym, result)
+					sym.Name, sym, result)
 			}
 		}
 	}
